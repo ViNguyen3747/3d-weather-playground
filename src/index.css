@@ -1,0 +1,158 @@
+html,
+body,
+#root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: url("/cursor.png"), default;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  transition: background-image 0.7s ease-in-out;
+}
+.group-btn {
+  display: flex;
+  flex-direction: row;
+}
+.btn {
+  font-size: 1.2rem;
+  padding: 1rem 2.5rem;
+  outline: none;
+  border-radius: 0.4rem;
+  margin: 1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: 0.5s;
+  border: 3px solid rgb(255, 255, 255);
+  border-radius: 20px;
+  color: #7e97b8;
+  background-color: #edf2fb;
+  -webkit-box-reflect: below 11px
+    linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
+}
+
+.btn:active {
+  scale: 0.92;
+}
+
+.btn:hover {
+  background: #abc4ff;
+  background: linear-gradient(270deg, #abc4ff 0%, #d7e3fc 60%);
+  color: #ffffff;
+}
+
+/* toggle */
+.switch {
+  font-size: 1.2rem;
+  position: relative;
+  width: 100px;
+  height: 50px;
+  margin-top: 20px;
+  cursor: pointer;
+  padding: 3px;
+  -webkit-box-reflect: below 11px
+    linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
+}
+
+.switch .input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cae6f0;
+  transition: 0.4s;
+  border-radius: 20px;
+  border: 3px solid rgb(255, 255, 255);
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 2.8rem;
+  width: 3rem;
+  border-radius: 20px;
+  left: 0.2rem;
+  bottom: 0.2rem;
+  z-index: 2;
+  background-color: #ffffff;
+  transition: 0.4s;
+}
+
+.sun svg {
+  position: absolute;
+  top: 0.4rem;
+  left: 3.5rem;
+  z-index: 1;
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.moon svg {
+  fill: #ceeaff;
+  position: absolute;
+  top: 0.4rem;
+  left: 0.2rem;
+  z-index: 1;
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+/* .switch:hover */
+.sun svg {
+  animation: rotate 15s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* .switch:hover */
+.moon svg {
+  animation: tilt 5s linear infinite;
+}
+
+@keyframes tilt {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-10deg);
+  }
+
+  75% {
+    transform: rotate(10deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.input:checked + .slider {
+  background-color: hsl(210, 19%, 27%);
+}
+
+.input:checked + .slider:before {
+  transform: translateX(2.8rem);
+}
