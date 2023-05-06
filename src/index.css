@@ -17,8 +17,10 @@ canvas {
 .group-btn {
   display: flex;
   flex-direction: row;
+  flex-wrap: nowrap;
 }
 .btn {
+  width: 12.5rem;
   font-size: 1.2rem;
   padding: 1rem 2.5rem;
   outline: none;

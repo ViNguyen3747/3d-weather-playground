@@ -8,27 +8,27 @@ const FOG = {
   depthWrite: false,
 };
 
-const Fog = ({ nodes }) => {
+const RainParticle = ({ position, snowOpacity }) => {
+  const ref = useRef();
+
+  useFrame(({ clock }) => {
+    const elapsedTime = clock.getElapsedTime();
+
+    ref.current.position.y = -((elapsedTime / 2 + position[1]) % 2.115);
+  });
   return (
-    <>
-      <mesh geometry={nodes.cloud1.geometry} position={[0, 0, -2]}>
-        <meshToonMaterial color={"#ffffff"} {...FOG} />
-      </mesh>
-      <mesh geometry={nodes.cloud2.geometry} position={[-7, 0, -3]}>
-        <meshToonMaterial color={"#ffffff"} {...FOG} />
-      </mesh>
-      <mesh geometry={nodes.cloud4.geometry} position={[-5, 0, 1]}>
-        <meshToonMaterial color={"#ffffff"} {...FOG} />
-      </mesh>
-      <mesh geometry={nodes.cloud5.geometry} position={[-6, 0, 4]}>
-        <meshToonMaterial color={"#ffffff"} {...FOG} />
-      </mesh>
-      <mesh geometry={nodes.cloud6.geometry} position={[3, 0, 4]}>
-        <meshToonMaterial color={"#ffffff"} {...FOG} />
-      </mesh>
-    </>
+    <mesh ref={ref} position={position}>
+      <sphereBufferGeometry args={[0.01, 16, 16]} />
+      <animated.meshBasicMaterial
+        color={"#ffffff"}
+        transparent
+        opacity={snowOpacity}
+        toneMapped={false}
+      />
+    </mesh>
   );
 };
+
 export default ({ isNight, condition }) => {
   const { nodes } = useGLTF("./models.glb");
   const sunRayRef = useRef();
@@ -38,9 +38,13 @@ export default ({ isNight, condition }) => {
   const sunMoon = useSpring({
     to: {
       sunPosition:
-        condition === "clear" && !isNight ? [0.5, 0, -0.7] : [0.5, 4, -0.7],
+        (condition === "clear" || condition === "cloudy") && !isNight
+          ? [0.5, 0, -0.7]
+          : [0.5, 2.5, -0.7],
       moonPosition:
-        condition === "clear" && isNight ? [0.5, 0, -0.7] : [0.5, 4, -0.7],
+        (condition === "clear" || condition === "cloudy") && isNight
+          ? [0.5, 0, -0.7]
+          : [0.5, 2.5, -0.7],
     },
     config: { mass: 1, tension: 280, friction: 70 },
   });
@@ -48,25 +52,68 @@ export default ({ isNight, condition }) => {
     to: { position: condition === "mist" ? [0, -2.5, 0] : [0, -10, 0] },
     config: { mass: 1, tension: 280, friction: 60 },
   });
-  const clouds = useSpring({
+  const clouds1 = useSpring({
     to: {
-      position1: condition === "cloudy" ? [0, -2.5, -4] : [0, 70, -4],
-      position2: condition === "cloudy" ? [-7, -1, -5] : [-7, 50, -5],
-      position3: condition === "cloudy" ? [4, -1.5, 1] : [4, 25, 1],
-      position4: condition === "cloudy" ? [-5, -1, 2] : [-5, 70, 2],
-      position5: condition === "cloudy" ? [-6, -2, 7] : [-6, 50, 7],
-      position6: condition === "cloudy" ? [3, -3, 6] : [3, 40, 6],
+      position1:
+        condition === "cloudy" || condition === "snowy"
+          ? [0, -2.5, -4]
+          : [0, 11, -4],
+
+      position3:
+        condition === "cloudy" || condition === "snowy"
+          ? [4, -1.5, 1]
+          : [4, 14, 1],
+
+      position5:
+        condition === "cloudy" || condition === "snowy"
+          ? [-6, -2, 7]
+          : [-6, 18, 7],
     },
     config: { mass: 1, tension: 280, friction: 60 },
   });
-  console.log(nodes);
+  const clouds2 = useSpring({
+    to: {
+      position2:
+        condition === "cloudy" || condition === "snowy"
+          ? [-7, -1, -5]
+          : [-7, 15, -5],
+
+      position4:
+        condition === "cloudy" || condition === "snowy"
+          ? [-5, -1, 2]
+          : [-5, 16, 2],
+
+      position6:
+        condition === "cloudy" || condition === "snowy"
+          ? [3, -3, 6]
+          : [3, 14, 6],
+    },
+    config: { mass: 1, tension: 280, friction: 80 },
+  });
+
+  const snow = useSpring({
+    to: { opacity: condition === "snowy" ? 1 : 0 },
+    config: { mass: 1, tension: 280, friction: 60 },
+  });
+
+  const particles = new Array(100).fill().map(() => ({
+    position: [
+      (Math.random() - 0.5) * 2,
+      Math.random() * 2,
+      (Math.random() - 0.5) * 2,
+    ],
+  }));
   return (
-    <group position={[-0.5, -2, -0.5]}>
+    <>
       <mesh geometry={nodes.base1.geometry}>
         <meshStandardMaterial color={"#d7e3fc"} />
       </mesh>
-      <mesh geometry={nodes.base2.geometry}>
-        <meshStandardMaterial color={"#d7e3fc"} />
+      <mesh geometry={nodes.surface.geometry}>
+        {condition === "snowy" ? (
+          <meshBasicMaterial color={"#ffffff"} toneMapped={false} />
+        ) : (
+          <meshStandardMaterial color={"#d7e3fc"} />
+        )}
       </mesh>
       <group scale={0.1}>
         {[...Array(8)].map((_, i) => (
@@ -83,13 +130,18 @@ export default ({ isNight, condition }) => {
             toneMapped={false}
           />
         </mesh>
+        {condition === "snowy" && (
+          <mesh geometry={nodes.snow_roof.geometry}>
+            <meshBasicMaterial color={"#ffffff"} toneMapped={false} />
+          </mesh>
+        )}
       </group>
       <group position={[0, 0, 0.1]}>
         <mesh geometry={nodes.streetlight1.geometry}>
-          <meshStandardMaterial color={"#abc4ff"} />
+          <meshStandardMaterial color={"#8d99ae"} />
         </mesh>
         <mesh geometry={nodes.streetlight2.geometry} position={[0.5, 0, 0]}>
-          <meshStandardMaterial color={"#abc4ff"} />
+          <meshStandardMaterial color={"#8d99ae"} />
         </mesh>
         {isNight && (
           <>
@@ -112,7 +164,7 @@ export default ({ isNight, condition }) => {
           </>
         )}
       </group>
-
+      {/* Weather */}
       <group position={[0, 3, 0]}>
         <animated.group position={sunMoon.sunPosition}>
           {/* sun */}
@@ -134,46 +186,71 @@ export default ({ isNight, condition }) => {
         <group scale={0.15}>
           <animated.mesh
             geometry={nodes.cloud1.geometry}
-            position={clouds.position1}
+            position={clouds1.position1}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
           <animated.mesh
             geometry={nodes.cloud2.geometry}
-            position={clouds.position2}
+            position={clouds2.position2}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
           <animated.mesh
             geometry={nodes.cloud3.geometry}
-            position={clouds.position3}
+            position={clouds1.position3}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
           <animated.mesh
             geometry={nodes.cloud4.geometry}
-            position={clouds.position4}
+            position={clouds2.position4}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
           <animated.mesh
             geometry={nodes.cloud5.geometry}
-            position={clouds.position5}
+            position={clouds1.position5}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
           <animated.mesh
             geometry={nodes.cloud6.geometry}
-            position={clouds.position6}
+            position={clouds2.position6}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
         </group>
         {/* fog */}
         <animated.group scale={[0.15, 0.2, 0.2]} position={mist.position}>
-          <Fog nodes={nodes} />
+          <mesh geometry={nodes.cloud1.geometry} position={[0, 0, -2]}>
+            <meshToonMaterial color={"#ffffff"} {...FOG} />
+          </mesh>
+          <mesh geometry={nodes.cloud2.geometry} position={[-7, 0, -3]}>
+            <meshToonMaterial color={"#ffffff"} {...FOG} />
+          </mesh>
+          <mesh geometry={nodes.cloud4.geometry} position={[-5, 0, 1]}>
+            <meshToonMaterial color={"#ffffff"} {...FOG} />
+          </mesh>
+          <mesh geometry={nodes.cloud5.geometry} position={[-6, 0, 4]}>
+            <meshToonMaterial color={"#ffffff"} {...FOG} />
+          </mesh>
+          <mesh geometry={nodes.cloud6.geometry} position={[3, 0, 4]}>
+            <meshToonMaterial color={"#ffffff"} {...FOG} />
+          </mesh>
         </animated.group>
+        <>
+          <group position={[0, -1, 0]}>
+            {particles.map((particle, index) => (
+              <RainParticle
+                key={index}
+                position={particle.position}
+                snowOpacity={snow.opacity}
+              />
+            ))}
+          </group>
+        </>
       </group>
-    </group>
+    </>
   );
 };
