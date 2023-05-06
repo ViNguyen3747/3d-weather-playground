@@ -38,11 +38,11 @@ export default ({ isNight, condition }) => {
   const sunMoon = useSpring({
     to: {
       sunPosition:
-        (condition === "clear" || condition === "cloudy") && !isNight
+        ["clear", "cloudy"].includes(condition) && !isNight
           ? [0.5, 0, -0.7]
           : [0.5, 2.5, -0.7],
       moonPosition:
-        (condition === "clear" || condition === "cloudy") && isNight
+        ["clear", "cloudy"].includes(condition) && isNight
           ? [0.5, 0, -0.7]
           : [0.5, 2.5, -0.7],
     },
@@ -54,39 +54,45 @@ export default ({ isNight, condition }) => {
   });
   const clouds1 = useSpring({
     to: {
-      position1:
-        condition === "cloudy" || condition === "snowy"
-          ? [0, -2.5, -4]
-          : [0, 11, -4],
+      position1: ["cloudy", "rainy", "snowy"].includes(condition)
+        ? [0, -2.5, -4]
+        : [0, 11, -4],
 
-      position3:
-        condition === "cloudy" || condition === "snowy"
-          ? [4, -1.5, 1]
-          : [4, 14, 1],
+      position3: ["cloudy", "rainy", "snowy"].includes(condition)
+        ? [4, -1.5, 1]
+        : [4, 14, 1],
 
-      position5:
-        condition === "cloudy" || condition === "snowy"
-          ? [-6, -2, 7]
-          : [-6, 18, 7],
+      position5: ["cloudy", "rainy", "snowy"].includes(condition)
+        ? [-6, -2, 7]
+        : [-6, 18, 7],
+      position7: ["rainy", "snowy"].includes(condition)
+        ? [0, 0, 0]
+        : [0, 15, 0],
+      position9: ["rainy", "snowy"].includes(condition)
+        ? [3, -2, 4]
+        : [3, 17, 4],
     },
     config: { mass: 1, tension: 280, friction: 60 },
   });
   const clouds2 = useSpring({
     to: {
-      position2:
-        condition === "cloudy" || condition === "snowy"
-          ? [-7, -1, -5]
-          : [-7, 15, -5],
+      position2: ["cloudy", "rainy", "snowy"].includes(condition)
+        ? [-7, -1, -5]
+        : [-7, 15, -5],
 
-      position4:
-        condition === "cloudy" || condition === "snowy"
-          ? [-5, -1, 2]
-          : [-5, 16, 2],
+      position4: ["cloudy", "rainy", "snowy"].includes(condition)
+        ? [-5, -1, 2]
+        : [-5, 16, 2],
 
-      position6:
-        condition === "cloudy" || condition === "snowy"
-          ? [3, -3, 6]
-          : [3, 14, 6],
+      position6: ["cloudy", "rainy", "snowy"].includes(condition)
+        ? [3, -3, 6]
+        : [3, 14, 6],
+      position8: ["rainy", "snowy"].includes(condition)
+        ? [-7, -2, 5]
+        : [-7, 17, 5],
+      position10: ["rainy", "snowy"].includes(condition)
+        ? [-4, -3, -3]
+        : [-4, 15, -3],
     },
     config: { mass: 1, tension: 280, friction: 80 },
   });
@@ -217,6 +223,31 @@ export default ({ isNight, condition }) => {
           <animated.mesh
             geometry={nodes.cloud6.geometry}
             position={clouds2.position6}
+          >
+            <meshToonMaterial color={"#ffffff"} />
+          </animated.mesh>
+          {/* snowy or rainy */}
+          <animated.mesh
+            geometry={nodes.cloud7.geometry}
+            position={clouds1.position7}
+          >
+            <meshToonMaterial color={"#ffffff"} />
+          </animated.mesh>
+          <animated.mesh
+            geometry={nodes.cloud8.geometry}
+            position={clouds2.position8}
+          >
+            <meshToonMaterial color={"#ffffff"} />
+          </animated.mesh>
+          <animated.mesh
+            geometry={nodes.cloud9.geometry}
+            position={clouds1.position9}
+          >
+            <meshToonMaterial color={"#ffffff"} />
+          </animated.mesh>
+          <animated.mesh
+            geometry={nodes.cloud10.geometry}
+            position={clouds2.position10}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
