@@ -26,7 +26,7 @@ const RainParticle = ({ position, snowOpacity, isRainy }) => {
     >
       <sphereBufferGeometry args={[0.01, 16, 16]} />
       <animated.meshBasicMaterial
-        color={isRainy ? "#8ecae6" : "#ffffff"}
+        color={isRainy ? "#a9d6e5" : "#ffffff"}
         toneMapped={false}
       />
     </mesh>

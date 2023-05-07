@@ -37,7 +37,6 @@ const nightSky = `
 
 const ModelsGroup = ({ isNight, condition, children }) => {
   const groupRef = useRef();
-  const htmlRef = useRef();
 
   return (
     <>
@@ -64,6 +63,8 @@ function App() {
         minPolarAngle={Math.PI / 3}
         maxAzimuthAngle={Math.PI / 4}
         minAzimuthAngle={-Math.PI / 3}
+        minDistance={10}
+        maxDistance={35}
       />
       <ambientLight
         intensity={isNight ? 0.2 : 1}

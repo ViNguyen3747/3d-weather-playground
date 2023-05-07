@@ -6,7 +6,7 @@ body,
   left: 0;
   width: 100%;
   height: 100%;
-  cursor: url("/cursor.png"), default;
+  cursor: url("/cursor.svg"), default;
 }
 
 canvas {
@@ -26,7 +26,7 @@ canvas {
   outline: none;
   border-radius: 0.4rem;
   margin: 1rem;
-  cursor: pointer;
+  cursor: url("/cursor.svg"), default;
   text-transform: uppercase;
   font-weight: 700;
   transition: 0.5s;
@@ -40,22 +40,25 @@ canvas {
 
 .btn:active {
   scale: 0.92;
+  cursor: url("/cursor.svg"), default;
 }
 
 .btn:hover {
   background: #abc4ff;
   background: linear-gradient(270deg, #abc4ff 0%, #d7e3fc 60%);
   color: #ffffff;
+  cursor: url("/cursor.svg"), default;
 }
 
 /* toggle */
 .switch {
+  cursor: url("/cursor.svg"), default;
   font-size: 1.2rem;
   position: relative;
   width: 100px;
   height: 50px;
   margin-top: 20px;
-  cursor: pointer;
+  transition: 0.5s;
   padding: 3px;
   -webkit-box-reflect: below 11px
     linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
@@ -65,11 +68,11 @@ canvas {
   opacity: 0;
   width: 0;
   height: 0;
+  cursor: url("/cursor.svg"), default;
 }
 
 .slider {
   position: absolute;
-  cursor: pointer;
   top: 0;
   left: 0;
   right: 0;
@@ -79,8 +82,12 @@ canvas {
   border-radius: 20px;
   border: 3px solid rgb(255, 255, 255);
   border-radius: 20px;
+  cursor: url("/cursor.svg"), default;
 }
 
+.switch:hover {
+  scale: 1.05;
+}
 .slider:before {
   position: absolute;
   content: "";
@@ -92,6 +99,7 @@ canvas {
   z-index: 2;
   background-color: #ffffff;
   transition: 0.4s;
+  cursor: url("/cursor.svg"), default;
 }
 
 .sun svg {
@@ -101,6 +109,7 @@ canvas {
   z-index: 1;
   width: 2.6rem;
   height: 2.6rem;
+  cursor: url("/cursor.svg"), default;
 }
 
 .moon svg {
@@ -111,11 +120,13 @@ canvas {
   z-index: 1;
   width: 2.6rem;
   height: 2.6rem;
+  cursor: url("/cursor.svg"), default;
 }
 
 /* .switch:hover */
 .sun svg {
   animation: rotate 15s linear infinite;
+  cursor: url("/cursor.svg"), default;
 }
 
 @keyframes rotate {
@@ -131,6 +142,7 @@ canvas {
 /* .switch:hover */
 .moon svg {
   animation: tilt 5s linear infinite;
+  cursor: url("/cursor.svg"), default;
 }
 
 @keyframes tilt {
