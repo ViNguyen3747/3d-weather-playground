@@ -5,23 +5,23 @@ import Models from "./Models";
 import { Perf } from "r3f-perf";
 const daySky = `
     linear-gradient(
-    180deg,
-    #c9b8ff 0%,
-    hsl(260deg 99% 86%) 11%,
-    #d7bdff 22%,
-    hsl(269deg 98% 87%) 33%,
-    hsl(274deg 98% 88%) 44%,
-    hsl(279deg 97% 89%) 56%,
-    hsl(284deg 97% 89%) 67%,
-    hsl(289deg 97% 90%) 78%,
-    hsl(294deg 98% 91%) 89%,
-    #ffd6ff 100%
+  0deg,
+  hsl(189deg 75% 75%) 0%,
+  hsl(190deg 75% 77%) 11%,
+  hsl(190deg 75% 79%) 22%,
+  hsl(190deg 75% 81%) 33%,
+  hsl(190deg 76% 84%) 44%,
+  hsl(190deg 76% 86%) 56%,
+  hsl(190deg 76% 88%) 67%,
+  hsl(191deg 77% 90%) 78%,
+  hsl(191deg 77% 92%) 89%,
+  hsl(191deg 79% 95%) 100%
   )
 `;
 
 const nightSky = `
     linear-gradient(
-    180deg,
+    0deg,
     hsl(240deg 57% 3%) 0%,
     hsl(235deg 32% 6%) 11%,
     hsl(231deg 24% 8%) 22%,
@@ -35,6 +35,38 @@ const nightSky = `
   )
 `;
 
+const graySky = `
+  linear-gradient(
+  0deg,
+  hsl(240deg 4% 20%) 0%,
+  hsl(240deg 3% 24%) 11%,
+  hsl(240deg 3% 27%) 22%,
+  hsl(240deg 3% 31%) 33%,
+  hsl(240deg 2% 35%) 44%,
+  hsl(240deg 2% 39%) 56%,
+  hsl(240deg 1% 43%) 67%,
+  hsl(240deg 1% 47%) 78%,
+  hsl(240deg 0% 50%) 89%,
+  hsl(0deg 0% 54%) 100%
+
+  )
+`;
+
+const grayNight = `
+  linear-gradient(
+  0deg,
+  hsl(0deg 0% 9%) 0%,
+  hsl(0deg 0% 10%) 11%,
+  hsl(0deg 0% 12%) 22%,
+  hsl(0deg 0% 13%) 33%,
+  hsl(0deg 0% 14%) 44%,
+  hsl(0deg 0% 15%) 56%,
+  hsl(0deg 0% 17%) 67%,
+  hsl(0deg 0% 18%) 78%,
+  hsl(0deg 0% 19%) 89%,
+  hsl(0deg 0% 21%) 100%
+  )
+`;
 const ModelsGroup = ({ isNight, condition, children }) => {
   const groupRef = useRef();
 
@@ -56,7 +88,17 @@ function App() {
         position: [-14, 10, 30],
         fov: 8,
       }}
-      style={{ backgroundImage: isNight ? nightSky : daySky }}
+      style={{
+        transition: "background-image 0.5s ease-in-out",
+        backgroundImage:
+          ["rainy", "snowy", "mist"].includes(condition) && isNight
+            ? grayNight
+            : ["rainy", "snowy", "mist"].includes(condition) && !isNight
+            ? graySky
+            : isNight
+            ? nightSky
+            : daySky,
+      }}
     >
       <CameraControls
         maxPolarAngle={Math.PI / 2.5}
@@ -67,12 +109,24 @@ function App() {
         maxDistance={35}
       />
       <ambientLight
-        intensity={isNight ? 0.2 : 1}
+        intensity={
+          ["rainy", "snowy", "mist"].includes(condition)
+            ? 0.3
+            : isNight
+            ? 0.2
+            : 1
+        }
         color={isNight ? "#92b0d0" : "#ffffff"}
       />
       <directionalLight
         position={isNight ? [30, 30, 15] : [30, 30, 40]}
-        intensity={isNight ? 0.2 : 1}
+        intensity={
+          isNight
+            ? 0.2
+            : ["rainy", "snowy", "mist"].includes(condition)
+            ? 0.3
+            : 1
+        }
       />
       <ModelsGroup isNight={isNight} condition={condition}>
         <Html transform occlude="blending" scale={0.2} position={[-2.5, 0, -1]}>
