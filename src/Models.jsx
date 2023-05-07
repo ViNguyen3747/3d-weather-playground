@@ -18,7 +18,7 @@ const BUILDINGS_COLORS = [
   "#b1c8ff",
   "#abc4ff",
 ];
-const RainParticle = ({ position, snowOpacity, isRainy }) => {
+const RainParticle = ({ position, isRainy }) => {
   const ref = useRef();
 
   useFrame(({ clock }) => {
@@ -46,8 +46,19 @@ const RainParticle = ({ position, snowOpacity, isRainy }) => {
 export default ({ isNight, condition }) => {
   const { nodes } = useGLTF("./models.glb");
   const sunRayRef = useRef();
+  const thunderFlash = useRef();
   useFrame(({ clock }) => {
     sunRayRef.current.rotation.z = -clock.getElapsedTime() / 4;
+
+    if (Math.random() > 0.93 || thunderFlash.current.power > 100) {
+      if (thunderFlash.current.power < 1)
+        thunderFlash.current.position.set(
+          Math.random() * 10,
+          30 + Math.random() * 20,
+          10
+        );
+      thunderFlash.current.power = Math.random() * 10;
+    }
   });
   const sunMoon = useSpring({
     to: {
@@ -133,6 +144,7 @@ export default ({ isNight, condition }) => {
       (Math.random() - 0.5) * 2,
     ],
   }));
+
   return (
     <>
       <mesh geometry={nodes.base1.geometry}>
@@ -331,6 +343,14 @@ export default ({ isNight, condition }) => {
           </group>
         </>
       </group>
+      <pointLight
+        color="#C5EFFD"
+        position={[20, 30, 10]}
+        ref={thunderFlash}
+        visible={condition === "rainy"}
+        distance={500}
+        decay={1.6}
+      />
     </>
   );
 };
