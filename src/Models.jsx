@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
+import { Scene } from "three";
 const FOG = {
   transparent: true,
   opacity: 0.5,
@@ -56,7 +57,7 @@ export default ({ isNight, condition }) => {
     to: {
       position1: ["cloudy", "rainy", "snowy"].includes(condition)
         ? [0, -2.5, -4]
-        : [0, 11, -4],
+        : [0, 13, -4],
 
       position3: ["cloudy", "rainy", "snowy"].includes(condition)
         ? [4, -1.5, 1]
@@ -82,11 +83,11 @@ export default ({ isNight, condition }) => {
 
       position4: ["cloudy", "rainy", "snowy"].includes(condition)
         ? [-5, -1, 2]
-        : [-5, 16, 2],
+        : [-5, 17, 2],
 
       position6: ["cloudy", "rainy", "snowy"].includes(condition)
         ? [3, -3, 6]
-        : [3, 14, 6],
+        : [3, 19, 6],
       position8: ["rainy", "snowy"].includes(condition)
         ? [-7, -2, 5]
         : [-7, 17, 5],
@@ -96,9 +97,19 @@ export default ({ isNight, condition }) => {
     },
     config: { mass: 1, tension: 280, friction: 80 },
   });
-
+  const rainy = useSpring({
+    to: {
+      thunderscale1: condition === "rainy" ? 0.5 : 0,
+      thunderscale2: condition === "rainy" ? 1 : 0,
+    },
+    config: { mass: 1, tension: 300, friction: 60 },
+  });
   const snow = useSpring({
-    to: { opacity: condition === "snowy" ? 1 : 0 },
+    to: {
+      opacity: condition === "snowy" ? 1 : 0,
+      roofPosition: condition === "snowy" ? [0, 0, 0] : [0, 1, 0],
+      roofOpacity: condition === "snowy" ? 1 : 0,
+    },
     config: { mass: 1, tension: 280, friction: 60 },
   });
 
@@ -136,11 +147,17 @@ export default ({ isNight, condition }) => {
             toneMapped={false}
           />
         </mesh>
-        {condition === "snowy" && (
-          <mesh geometry={nodes.snow_roof.geometry}>
-            <meshBasicMaterial color={"#ffffff"} toneMapped={false} />
-          </mesh>
-        )}
+        <animated.mesh
+          geometry={nodes.snow_roof.geometry}
+          position={snow.roofPosition}
+        >
+          <animated.meshBasicMaterial
+            color={"#ffffff"}
+            toneMapped={false}
+            transparent
+            opacity={snow.roofOpacity}
+          />
+        </animated.mesh>
       </group>
       <group position={[0, 0, 0.1]}>
         <mesh geometry={nodes.streetlight1.geometry}>
@@ -149,26 +166,24 @@ export default ({ isNight, condition }) => {
         <mesh geometry={nodes.streetlight2.geometry} position={[0.5, 0, 0]}>
           <meshStandardMaterial color={"#8d99ae"} />
         </mesh>
-        {isNight && (
-          <>
-            <mesh geometry={nodes.light1.geometry}>
-              <meshBasicMaterial
-                color={"#fffceb"}
-                transparent
-                opacity={0.6}
-                toneMapped={false}
-              />
-            </mesh>
-            <mesh geometry={nodes.light2.geometry} position={[0.5, 0, 0]}>
-              <meshBasicMaterial
-                color={"#fffceb"}
-                transparent
-                opacity={0.6}
-                toneMapped={false}
-              />
-            </mesh>
-          </>
-        )}
+        <group visible={isNight}>
+          <mesh geometry={nodes.light1.geometry}>
+            <meshBasicMaterial
+              color={"#fffceb"}
+              transparent
+              opacity={0.6}
+              toneMapped={false}
+            />
+          </mesh>
+          <mesh geometry={nodes.light2.geometry} position={[0.5, 0, 0]}>
+            <meshBasicMaterial
+              color={"#fffceb"}
+              transparent
+              opacity={0.6}
+              toneMapped={false}
+            />
+          </mesh>
+        </group>
       </group>
       {/* Weather */}
       <group position={[0, 3, 0]}>
@@ -251,6 +266,23 @@ export default ({ isNight, condition }) => {
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
+          {/* thunders */}
+          <group>
+            <animated.mesh
+              geometry={nodes.thunder1.geometry}
+              scale={rainy.thunderscale1}
+              position={[4, -3, 7]}
+            >
+              <meshBasicMaterial color={"#fff2b2"} toneMapped={false} />
+            </animated.mesh>
+            <animated.mesh
+              geometry={nodes.thunder2.geometry}
+              scale={rainy.thunderscale2}
+              position={[-5, -3, 2]}
+            >
+              <meshBasicMaterial color={"#fff2b2"} toneMapped={false} />
+            </animated.mesh>
+          </group>
         </group>
         {/* fog */}
         <animated.group scale={[0.15, 0.2, 0.2]} position={mist.position}>

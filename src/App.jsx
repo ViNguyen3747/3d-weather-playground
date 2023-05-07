@@ -2,6 +2,7 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { CameraControls, OrbitControls, Html } from "@react-three/drei";
 import { Suspense, useState, useRef } from "react";
 import Models from "./Models";
+import { Perf } from "r3f-perf";
 const daySky = `
     linear-gradient(
     180deg,
@@ -72,7 +73,6 @@ function App() {
         position={isNight ? [30, 30, 15] : [30, 30, 40]}
         intensity={isNight ? 0.2 : 1}
       />
-
       <ModelsGroup isNight={isNight} condition={condition}>
         <Html transform occlude="blending" scale={0.2} position={[-2.5, 0, -1]}>
           <div className="group-btn">
@@ -139,6 +139,8 @@ function App() {
           </div>
         </Html>
       </ModelsGroup>
+
+      <Perf />
     </Canvas>
   );
 }
