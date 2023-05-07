@@ -6,16 +6,16 @@ import { Perf } from "r3f-perf";
 const daySky = `
     linear-gradient(
   0deg,
-  hsl(189deg 75% 75%) 0%,
-  hsl(190deg 75% 77%) 11%,
-  hsl(190deg 75% 79%) 22%,
-  hsl(190deg 75% 81%) 33%,
-  hsl(190deg 76% 84%) 44%,
-  hsl(190deg 76% 86%) 56%,
-  hsl(190deg 76% 88%) 67%,
-  hsl(191deg 77% 90%) 78%,
-  hsl(191deg 77% 92%) 89%,
-  hsl(191deg 79% 95%) 100%
+  hsl(191deg 68% 85%) 0%,
+  hsl(191deg 65% 85%) 11%,
+  hsl(190deg 62% 84%) 22%,
+  hsl(190deg 60% 84%) 33%,
+  hsl(190deg 57% 83%) 44%,
+  hsl(190deg 55% 83%) 56%,
+  hsl(190deg 53% 82%) 67%,
+  hsl(189deg 51% 82%) 78%,
+  hsl(189deg 49% 81%) 89%,
+  hsl(189deg 47% 81%) 100%
   )
 `;
 
@@ -114,9 +114,9 @@ function App() {
             ? 0.3
             : isNight
             ? 0.2
-            : 1
+            : 0.8
         }
-        color={isNight ? "#92b0d0" : "#ffffff"}
+        color={isNight ? "#abc4ff" : "#ffffff"}
       />
       <directionalLight
         position={isNight ? [30, 30, 15] : [30, 30, 40]}

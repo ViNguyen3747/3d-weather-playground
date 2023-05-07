@@ -4,10 +4,20 @@ import { useFrame } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
 const FOG = {
   transparent: true,
-  opacity: 0.5,
-  depthWrite: false,
+  opacity: 0.2,
+  depthTest: false,
+  depthFunc: false,
 };
-
+const BUILDINGS_COLORS = [
+  "#edf2fb",
+  "#e2eafc",
+  "#d7e3fc",
+  "#ccdbfd",
+  "#c1d3fe",
+  "#b6ccfe",
+  "#b1c8ff",
+  "#abc4ff",
+];
 const RainParticle = ({ position, snowOpacity, isRainy }) => {
   const ref = useRef();
 
@@ -26,7 +36,7 @@ const RainParticle = ({ position, snowOpacity, isRainy }) => {
     >
       <sphereBufferGeometry args={[0.01, 16, 16]} />
       <animated.meshBasicMaterial
-        color={isRainy ? "#a9d6e5" : "#ffffff"}
+        color={isRainy ? "#95bfee" : "#ffffff"}
         toneMapped={false}
       />
     </mesh>
@@ -53,7 +63,7 @@ export default ({ isNight, condition }) => {
     config: { mass: 1, tension: 280, friction: 70 },
   });
   const mist = useSpring({
-    to: { position: condition === "mist" ? [0, -2.5, 0] : [0, -10, 0] },
+    to: { position: condition === "mist" ? [0, -2.5, 0] : [0, 3, 0] },
     config: { mass: 1, tension: 280, friction: 60 },
   });
   const clouds1 = useSpring({
@@ -126,27 +136,27 @@ export default ({ isNight, condition }) => {
   return (
     <>
       <mesh geometry={nodes.base1.geometry}>
-        <meshStandardMaterial color={"#d7e3fc"} />
+        <meshStandardMaterial color={"#abc4ff"} />
       </mesh>
       <mesh geometry={nodes.surface.geometry}>
         {condition === "snowy" ? (
           <meshBasicMaterial color={"#ffffff"} toneMapped={false} />
         ) : (
-          <meshStandardMaterial color={"#d7e3fc"} />
+          <meshStandardMaterial color={"#c1d3fe"} />
         )}
       </mesh>
       <group scale={0.1}>
         {[...Array(8)].map((_, i) => (
           <mesh key={i} geometry={nodes[`building${i + 1}`].geometry}>
-            <meshStandardMaterial color={"#abc4ff"} />
+            <meshStandardMaterial color={BUILDINGS_COLORS[i]} />
           </mesh>
         ))}
         <mesh geometry={nodes.door_light.geometry}>
-          <meshBasicMaterial color={"#fffceb"} toneMapped={false} />
+          <meshBasicMaterial color={"#fef9ef"} toneMapped={false} />
         </mesh>
         <mesh geometry={nodes.door_dark.geometry}>
           <meshBasicMaterial
-            color={isNight ? "#001d3d" : "#fffceb"}
+            color={isNight ? "#244372" : "#fef9ef"}
             toneMapped={false}
           />
         </mesh>
@@ -164,10 +174,10 @@ export default ({ isNight, condition }) => {
       </group>
       <group position={[0, 0, 0.1]}>
         <mesh geometry={nodes.streetlight1.geometry}>
-          <meshStandardMaterial color={"#8d99ae"} />
+          <meshStandardMaterial color={"#9aa2d5"} />
         </mesh>
         <mesh geometry={nodes.streetlight2.geometry} position={[0.5, 0, 0]}>
-          <meshStandardMaterial color={"#8d99ae"} />
+          <meshStandardMaterial color={"#9aa2d5"} />
         </mesh>
         <group visible={isNight}>
           <mesh geometry={nodes.light1.geometry}>
@@ -288,20 +298,20 @@ export default ({ isNight, condition }) => {
           </group>
         </group>
         {/* fog */}
-        <animated.group scale={[0.15, 0.2, 0.2]} position={mist.position}>
-          <mesh geometry={nodes.cloud1.geometry} position={[0, 0, -2]}>
+        <animated.group scale={[0.15, 0.15, 0.15]} position={mist.position}>
+          <mesh geometry={nodes.cloud11.geometry} position={[0, -2, -1]}>
             <meshToonMaterial color={"#ffffff"} {...FOG} />
           </mesh>
-          <mesh geometry={nodes.cloud2.geometry} position={[-7, 0, -3]}>
+          <mesh geometry={nodes.cloud7.geometry} position={[-3, 0, -3]}>
             <meshToonMaterial color={"#ffffff"} {...FOG} />
           </mesh>
-          <mesh geometry={nodes.cloud4.geometry} position={[-5, 0, 1]}>
+          <mesh geometry={nodes.cloud6.geometry} position={[-3, 0, 1]}>
             <meshToonMaterial color={"#ffffff"} {...FOG} />
           </mesh>
-          <mesh geometry={nodes.cloud5.geometry} position={[-6, 0, 4]}>
+          <mesh geometry={nodes.cloud9.geometry} position={[-0, 0, 4]}>
             <meshToonMaterial color={"#ffffff"} {...FOG} />
           </mesh>
-          <mesh geometry={nodes.cloud6.geometry} position={[3, 0, 4]}>
+          <mesh geometry={nodes.cloud1.geometry} position={[3, 0, 4]}>
             <meshToonMaterial color={"#ffffff"} {...FOG} />
           </mesh>
         </animated.group>
