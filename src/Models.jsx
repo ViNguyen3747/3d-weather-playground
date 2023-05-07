@@ -1,29 +1,32 @@
 import { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
-import { Scene } from "three";
 const FOG = {
   transparent: true,
   opacity: 0.5,
   depthWrite: false,
 };
 
-const RainParticle = ({ position, snowOpacity }) => {
+const RainParticle = ({ position, snowOpacity, isRainy }) => {
   const ref = useRef();
 
   useFrame(({ clock }) => {
     const elapsedTime = clock.getElapsedTime();
 
-    ref.current.position.y = -((elapsedTime / 2 + position[1]) % 2.115);
+    ref.current.position.y = isRainy
+      ? -((elapsedTime + position[1]) % 1.8)
+      : -((elapsedTime / 2 + position[1]) % 2.115);
   });
   return (
-    <mesh ref={ref} position={position}>
+    <mesh
+      ref={ref}
+      position={position}
+      scale={isRainy ? [0.5, Math.random() * 5, 0.5] : [1, 1, 1]}
+    >
       <sphereBufferGeometry args={[0.01, 16, 16]} />
       <animated.meshBasicMaterial
-        color={"#ffffff"}
-        transparent
-        opacity={snowOpacity}
+        color={isRainy ? "#8ecae6" : "#ffffff"}
         toneMapped={false}
       />
     </mesh>
@@ -106,7 +109,7 @@ export default ({ isNight, condition }) => {
   });
   const snow = useSpring({
     to: {
-      opacity: condition === "snowy" ? 1 : 0,
+      opacity: ["rainy", "snowy"].includes(condition) ? 1 : 0,
       roofPosition: condition === "snowy" ? [0, 0, 0] : [0, 1, 0],
       roofOpacity: condition === "snowy" ? 1 : 0,
     },
@@ -303,12 +306,16 @@ export default ({ isNight, condition }) => {
           </mesh>
         </animated.group>
         <>
-          <group position={[0, -1, 0]}>
+          <group
+            position={[0, -1, 0]}
+            visible={["rainy", "snowy"].includes(condition)}
+          >
             {particles.map((particle, index) => (
               <RainParticle
                 key={index}
                 position={particle.position}
                 snowOpacity={snow.opacity}
+                isRainy={condition === "rainy"}
               />
             ))}
           </group>
