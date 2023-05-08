@@ -195,13 +195,13 @@ function App() {
         <Html transform occlude="blending" scale={0.2} position={[2.7, 0, -1]}>
           <div className="group-btn">
             <button className="btn" onClick={() => setCondition("storm")}>
-              Thunder
+              Stormy
             </button>
             <button className="btn" onClick={() => setCondition("snowy")}>
               Snowy
             </button>
             <button className="btn" onClick={() => setCondition("mist")}>
-              Mist
+              Foggy
             </button>
           </div>
         </Html>

@@ -92,7 +92,7 @@ export default ({ isNight, condition }) => {
     to: {
       position1: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [0, -2.5, -4]
-        : [0, 13, -4],
+        : [0, 15, -4],
 
       position3: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [4, -1.5, 1]
