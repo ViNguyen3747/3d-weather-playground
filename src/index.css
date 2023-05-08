@@ -21,8 +21,9 @@ canvas {
 }
 .btn {
   width: 12.5rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 1rem 2.5rem;
+  letter-spacing: 0.1rem;
   outline: none;
   border-radius: 0.4rem;
   margin: 1rem;
@@ -33,7 +34,7 @@ canvas {
   border: 3px solid rgb(255, 255, 255);
   border-radius: 20px;
   color: #7e97b8;
-  background-color: #edf2fb;
+  background-color: #e0e8f6;
   -webkit-box-reflect: below 11px
     linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4));
 }

@@ -181,7 +181,7 @@ export default ({ isNight, condition }) => {
         </mesh>
         <mesh geometry={nodes.door_dark.geometry}>
           <meshBasicMaterial
-            color={isNight ? "#333333" : "#fef9ef"}
+            color={isNight ? "#495057" : "#fef9ef"}
             toneMapped={false}
           />
         </mesh>
