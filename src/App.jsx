@@ -1,5 +1,5 @@
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { CameraControls, OrbitControls, Html } from "@react-three/drei";
+import { CameraControls, Html } from "@react-three/drei";
 import { Suspense, useState, useRef } from "react";
 import Models from "./Models";
 import { Perf } from "r3f-perf";
@@ -91,9 +91,10 @@ function App() {
       style={{
         transition: "background-image 0.5s ease-in-out",
         backgroundImage:
-          ["rainy", "snowy", "mist"].includes(condition) && isNight
+          ["rainy", "snowy", "mist", "storm"].includes(condition) && isNight
             ? grayNight
-            : ["rainy", "snowy", "mist"].includes(condition) && !isNight
+            : ["rainy", "snowy", "mist", "storm"].includes(condition) &&
+              !isNight
             ? graySky
             : isNight
             ? nightSky
@@ -110,7 +111,7 @@ function App() {
       />
       <ambientLight
         intensity={
-          ["rainy", "snowy", "mist"].includes(condition)
+          ["rainy", "snowy", "mist", "storm"].includes(condition)
             ? 0.3
             : isNight
             ? 0.2
@@ -123,13 +124,18 @@ function App() {
         intensity={
           isNight
             ? 0.2
-            : ["rainy", "snowy", "mist"].includes(condition)
+            : ["rainy", "snowy", "mist", "storm"].includes(condition)
             ? 0.3
             : 1
         }
       />
       <ModelsGroup isNight={isNight} condition={condition}>
-        <Html transform occlude="blending" scale={0.2} position={[-2.5, 0, -1]}>
+        <Html
+          transform
+          occlude="blending"
+          scale={0.2}
+          position={[-0.1, 1.3, -1]}
+        >
           <div className="group-btn">
             <label className="switch">
               <span className="sun">
@@ -172,18 +178,25 @@ function App() {
               />
               <span className="slider"></span>
             </label>
+          </div>
+        </Html>
+        <Html transform occlude="blending" scale={0.2} position={[-2.7, 0, -1]}>
+          <div className="group-btn">
             <button className="btn" onClick={() => setCondition("clear")}>
               Clear Sky
             </button>
             <button className="btn" onClick={() => setCondition("cloudy")}>
               Cloudy
             </button>
-          </div>
-        </Html>
-        <Html transform occlude="blending" scale={0.2} position={[2.8, 0, -1]}>
-          <div className="group-btn">
             <button className="btn" onClick={() => setCondition("rainy")}>
               Rainy
+            </button>
+          </div>
+        </Html>
+        <Html transform occlude="blending" scale={0.2} position={[2.7, 0, -1]}>
+          <div className="group-btn">
+            <button className="btn" onClick={() => setCondition("storm")}>
+              Thunder
             </button>
             <button className="btn" onClick={() => setCondition("snowy")}>
               Snowy

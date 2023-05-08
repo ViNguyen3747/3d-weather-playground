@@ -1,7 +1,8 @@
 import { useRef } from "react";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, useHelper } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
+
 const FOG = {
   transparent: true,
   opacity: 0.2,
@@ -18,7 +19,7 @@ const BUILDINGS_COLORS = [
   "#b1c8ff",
   "#abc4ff",
 ];
-const RainParticle = ({ position, isRainy }) => {
+const RainParticle = ({ position, isRainy, isStorm }) => {
   const ref = useRef();
 
   useFrame(({ clock }) => {
@@ -26,17 +27,25 @@ const RainParticle = ({ position, isRainy }) => {
 
     ref.current.position.y = isRainy
       ? -((elapsedTime + position[1]) % 1.8)
+      : isStorm
+      ? -((elapsedTime * 2 + position[1]) % 2)
       : -((elapsedTime / 2 + position[1]) % 2.115);
   });
   return (
     <mesh
       ref={ref}
       position={position}
-      scale={isRainy ? [0.5, Math.random() * 5, 0.5] : [1, 1, 1]}
+      scale={
+        isRainy
+          ? [0.5, Math.random() * 5, 0.5]
+          : isStorm
+          ? [0.5, Math.random() * 20, 0.5]
+          : [1, 1, 1]
+      }
     >
       <sphereBufferGeometry args={[0.01, 16, 16]} />
       <animated.meshBasicMaterial
-        color={isRainy ? "#95bfee" : "#ffffff"}
+        color={isRainy || isStorm ? "#caf0f8" : "#ffffff"}
         toneMapped={false}
       />
     </mesh>
@@ -47,17 +56,18 @@ export default ({ isNight, condition }) => {
   const { nodes } = useGLTF("./models.glb");
   const sunRayRef = useRef();
   const thunderFlash = useRef();
+
   useFrame(({ clock }) => {
     sunRayRef.current.rotation.z = -clock.getElapsedTime() / 4;
 
-    if (Math.random() > 0.93 || thunderFlash.current.power > 100) {
+    if (Math.random() > 0.93 || thunderFlash.current.power > 5) {
       if (thunderFlash.current.power < 1)
         thunderFlash.current.position.set(
-          Math.random() * 10,
-          30 + Math.random() * 20,
-          10
+          Math.random() * 2 - 1,
+          Math.random(),
+          Math.random() - 1
         );
-      thunderFlash.current.power = Math.random() * 10;
+      thunderFlash.current.power = Math.random() * 15;
     }
   });
   const sunMoon = useSpring({
@@ -79,21 +89,21 @@ export default ({ isNight, condition }) => {
   });
   const clouds1 = useSpring({
     to: {
-      position1: ["cloudy", "rainy", "snowy"].includes(condition)
+      position1: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [0, -2.5, -4]
         : [0, 13, -4],
 
-      position3: ["cloudy", "rainy", "snowy"].includes(condition)
+      position3: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [4, -1.5, 1]
         : [4, 14, 1],
 
-      position5: ["cloudy", "rainy", "snowy"].includes(condition)
+      position5: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [-6, -2, 7]
         : [-6, 18, 7],
-      position7: ["rainy", "snowy"].includes(condition)
+      position7: ["rainy", "snowy", "storm"].includes(condition)
         ? [0, 0, 0]
         : [0, 15, 0],
-      position9: ["rainy", "snowy"].includes(condition)
+      position9: ["rainy", "snowy", "storm"].includes(condition)
         ? [3, -2, 4]
         : [3, 17, 4],
     },
@@ -101,21 +111,21 @@ export default ({ isNight, condition }) => {
   });
   const clouds2 = useSpring({
     to: {
-      position2: ["cloudy", "rainy", "snowy"].includes(condition)
+      position2: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [-7, -1, -5]
         : [-7, 15, -5],
 
-      position4: ["cloudy", "rainy", "snowy"].includes(condition)
+      position4: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [-5, -1, 2]
         : [-5, 17, 2],
 
-      position6: ["cloudy", "rainy", "snowy"].includes(condition)
+      position6: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [3, -3, 6]
         : [3, 19, 6],
-      position8: ["rainy", "snowy"].includes(condition)
+      position8: ["rainy", "snowy", "storm"].includes(condition)
         ? [-7, -2, 5]
         : [-7, 17, 5],
-      position10: ["rainy", "snowy"].includes(condition)
+      position10: ["rainy", "snowy", "storm"].includes(condition)
         ? [-4, -3, -3]
         : [-4, 15, -3],
     },
@@ -123,8 +133,8 @@ export default ({ isNight, condition }) => {
   });
   const rainy = useSpring({
     to: {
-      thunderscale1: condition === "rainy" ? 0.5 : 0,
-      thunderscale2: condition === "rainy" ? 1 : 0,
+      thunderscale1: condition === "storm" ? 0.5 : 0,
+      thunderscale2: condition === "storm" ? 1 : 0,
     },
     config: { mass: 1, tension: 300, friction: 60 },
   });
@@ -137,13 +147,15 @@ export default ({ isNight, condition }) => {
     config: { mass: 1, tension: 280, friction: 60 },
   });
 
-  const particles = new Array(100).fill().map(() => ({
-    position: [
-      (Math.random() - 0.5) * 2,
-      Math.random() * 2,
-      (Math.random() - 0.5) * 2,
-    ],
-  }));
+  const particles = new Array(condition === "storm" ? 200 : 100)
+    .fill()
+    .map(() => ({
+      position: [
+        (Math.random() - 0.5) * 2,
+        Math.random() * 2,
+        (Math.random() - 0.5) * 2,
+      ],
+    }));
 
   return (
     <>
@@ -233,6 +245,7 @@ export default ({ isNight, condition }) => {
           <animated.mesh
             geometry={nodes.cloud1.geometry}
             position={clouds1.position1}
+            scale={[1.5, 1, 1.5]}
           >
             <meshToonMaterial color={"#ffffff"} />
           </animated.mesh>
@@ -297,6 +310,7 @@ export default ({ isNight, condition }) => {
               geometry={nodes.thunder1.geometry}
               scale={rainy.thunderscale1}
               position={[4, -3, 7]}
+              castShadow={false}
             >
               <meshBasicMaterial color={"#fff2b2"} toneMapped={false} />
             </animated.mesh>
@@ -304,6 +318,7 @@ export default ({ isNight, condition }) => {
               geometry={nodes.thunder2.geometry}
               scale={rainy.thunderscale2}
               position={[-5, -3, 2]}
+              castShadow={false}
             >
               <meshBasicMaterial color={"#fff2b2"} toneMapped={false} />
             </animated.mesh>
@@ -330,7 +345,7 @@ export default ({ isNight, condition }) => {
         <>
           <group
             position={[0, -1, 0]}
-            visible={["rainy", "snowy"].includes(condition)}
+            visible={["rainy", "snowy", "storm"].includes(condition)}
           >
             {particles.map((particle, index) => (
               <RainParticle
@@ -338,18 +353,20 @@ export default ({ isNight, condition }) => {
                 position={particle.position}
                 snowOpacity={snow.opacity}
                 isRainy={condition === "rainy"}
+                isStorm={condition === "storm"}
               />
             ))}
           </group>
         </>
       </group>
-      <pointLight
+      <spotLight
         color="#C5EFFD"
-        position={[20, 30, 10]}
+        position={[0, 0.5, 0]}
         ref={thunderFlash}
-        visible={condition === "rainy"}
-        distance={500}
-        decay={1.6}
+        visible={condition === "storm"}
+        distance={2.5}
+        decay={1.5}
+        angle={Math.PI}
       />
     </>
   );
