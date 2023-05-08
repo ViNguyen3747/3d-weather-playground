@@ -84,7 +84,7 @@ function App() {
   return (
     <Canvas
       camera={{
-        position: [-14, 10, 30],
+        position: [-22, 5, 32],
         fov: 8,
       }}
       style={{
@@ -101,7 +101,7 @@ function App() {
       }}
     >
       <CameraControls
-        maxPolarAngle={Math.PI / 2.5}
+        maxPolarAngle={Math.PI / 2.2}
         minPolarAngle={Math.PI / 3}
         maxAzimuthAngle={Math.PI / 4}
         minAzimuthAngle={-Math.PI / 3}
@@ -133,7 +133,7 @@ function App() {
           transform
           occlude="blending"
           scale={0.2}
-          position={[-0.1, 1.3, -1]}
+          position={[-0.1, 1.35, -1]}
         >
           <div className="group-btn">
             <label className="switch">

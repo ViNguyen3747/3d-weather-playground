@@ -93,21 +93,21 @@ export default ({ isNight, condition }) => {
     to: {
       position1: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [0, -2.5, -4]
-        : [0, 15, -4],
+        : [0, 20, -4],
 
       position3: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [4, -1.5, 1]
-        : [4, 14, 1],
+        : [4, 18, 1],
 
       position5: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [-6, -2, 7]
-        : [-6, 18, 7],
+        : [-6, 23, 7],
       position7: ["rainy", "snowy", "storm"].includes(condition)
         ? [0, 0, 0]
-        : [0, 15, 0],
+        : [0, 19, 0],
       position9: ["rainy", "snowy", "storm"].includes(condition)
         ? [3, -2, 4]
-        : [3, 17, 4],
+        : [3, 20, 4],
     },
     config: { mass: 1, tension: 280, friction: 60 },
   });
@@ -115,21 +115,21 @@ export default ({ isNight, condition }) => {
     to: {
       position2: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [-7, -1, -5]
-        : [-7, 15, -5],
+        : [-7, 17, -5],
 
       position4: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [-5, -1, 2]
-        : [-5, 17, 2],
+        : [-5, 20, 2],
 
       position6: ["cloudy", "rainy", "snowy", "storm"].includes(condition)
         ? [3, -3, 6]
         : [3, 19, 6],
       position8: ["rainy", "snowy", "storm"].includes(condition)
         ? [-7, -2, 5]
-        : [-7, 17, 5],
+        : [-7, 19, 5],
       position10: ["rainy", "snowy", "storm"].includes(condition)
         ? [-4, -3, -3]
-        : [-4, 15, -3],
+        : [-4, 19, -3],
     },
     config: { mass: 1, tension: 280, friction: 80 },
   });
