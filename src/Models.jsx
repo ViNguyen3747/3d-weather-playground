@@ -72,6 +72,7 @@ export default ({ isNight, condition }) => {
     }
   });
   const sunMoon = useSpring({
+    from: { sunPosition: [0.5, 2.5, -0.7] },
     to: {
       sunPosition:
         ["clear", "cloudy"].includes(condition) && !isNight
@@ -147,6 +148,33 @@ export default ({ isNight, condition }) => {
     },
     config: { mass: 1, tension: 280, friction: 60 },
   });
+  const initialLoading = useSpring({
+    from: {
+      base1Position: [0, -9, 0],
+      building1: [0, -5, 0],
+      building2: [0, -6, 0],
+      building3: [0, -3, 0],
+      building4: [0, -7, 0],
+      building5: [0, -9, 0],
+      building6: [0, -4, 0],
+      building7: [0, -5, 0],
+      building8: [0, -8, 0],
+      streetlight2: [0.5, -2, 0],
+    },
+    to: {
+      base1Position: [0, -0.02, 0],
+      building1: [0, 0, 0],
+      building2: [0, 0, 0],
+      building3: [0, 0, 0],
+      building4: [0, 0, 0],
+      building5: [0, 0, 0],
+      building6: [0, 0, 0],
+      building7: [0, 0, 0],
+      building8: [0, 0, 0],
+      streetlight2: [0.5, 0, 0],
+    },
+    config: { mass: 0.1, tension: 280, friction: 90 },
+  });
 
   const particles = new Array(condition === "storm" ? 200 : 100)
     .fill()
@@ -157,34 +185,53 @@ export default ({ isNight, condition }) => {
         (Math.random() - 0.5) * 2,
       ],
     }));
-
+  console.log(nodes);
   return (
     <>
-      <mesh geometry={nodes.base1.geometry}>
-        <meshStandardMaterial color={"#abc4ff"} />
-      </mesh>
-      <mesh geometry={nodes.surface.geometry}>
-        {condition === "snowy" ? (
-          <meshBasicMaterial color={"#ffffff"} toneMapped={false} />
-        ) : (
-          <meshStandardMaterial color={"#c1d3fe"} />
-        )}
-      </mesh>
+      <animated.group position={initialLoading.base1Position}>
+        <mesh geometry={nodes.base1.geometry}>
+          <meshStandardMaterial color={"#abc4ff"} />
+        </mesh>
+        <mesh geometry={nodes.surface.geometry}>
+          {condition === "snowy" ? (
+            <meshBasicMaterial color={"#ffffff"} toneMapped={false} />
+          ) : (
+            <meshStandardMaterial color={"#c1d3fe"} />
+          )}
+        </mesh>
+      </animated.group>
+      {/* buildings */}
       <group scale={0.1}>
         {[...Array(8)].map((_, i) => (
-          <mesh key={i} geometry={nodes[`building${i + 1}`].geometry}>
+          <animated.mesh
+            key={i}
+            geometry={nodes[`building${i + 1}`].geometry}
+            position={initialLoading[`building${i + 1}`]}
+          >
             <meshStandardMaterial color={BUILDINGS_COLORS[i]} />
-          </mesh>
+          </animated.mesh>
         ))}
-        <mesh geometry={nodes.door_light.geometry}>
-          <meshBasicMaterial color={"#fef9ef"} toneMapped={false} />
-        </mesh>
-        <mesh geometry={nodes.door_dark.geometry}>
-          <meshBasicMaterial
-            color={isNight ? "#495057" : "#fef9ef"}
-            toneMapped={false}
-          />
-        </mesh>
+        {[...Array(8)].map((_, i) => (
+          <animated.mesh
+            key={i}
+            geometry={nodes[`door_light${i + 1}`].geometry}
+            position={initialLoading[`building${i + 1}`]}
+          >
+            <meshBasicMaterial color={"#fef9ef"} toneMapped={false} />
+          </animated.mesh>
+        ))}
+        {[...Array(8)].map((_, i) => (
+          <animated.mesh
+            key={i}
+            geometry={nodes[`door_dark${i + 1}`].geometry}
+            position={initialLoading[`building${i + 1}`]}
+          >
+            <meshBasicMaterial
+              color={isNight ? "#495057" : "#fef9ef"}
+              toneMapped={false}
+            />
+          </animated.mesh>
+        ))}
         <animated.mesh
           geometry={nodes.snow_roof.geometry}
           position={snow.roofPosition}
@@ -198,12 +245,18 @@ export default ({ isNight, condition }) => {
         </animated.mesh>
       </group>
       <group position={[0, 0, 0.1]}>
-        <mesh geometry={nodes.streetlight1.geometry}>
+        <animated.mesh
+          geometry={nodes.streetlight1.geometry}
+          position={initialLoading.building3}
+        >
           <meshStandardMaterial color={"#9aa2d5"} />
-        </mesh>
-        <mesh geometry={nodes.streetlight2.geometry} position={[0.5, 0, 0]}>
+        </animated.mesh>
+        <animated.mesh
+          geometry={nodes.streetlight2.geometry}
+          position={initialLoading.streetlight2}
+        >
           <meshStandardMaterial color={"#9aa2d5"} />
-        </mesh>
+        </animated.mesh>
         <group visible={isNight}>
           <mesh geometry={nodes.light1.geometry}>
             <meshBasicMaterial
