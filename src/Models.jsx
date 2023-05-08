@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useGLTF, useHelper } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { animated, useSpring } from "@react-spring/three";
 
@@ -10,14 +10,14 @@ const FOG = {
   depthFunc: false,
 };
 const BUILDINGS_COLORS = [
-  "#edf2fb",
-  "#e2eafc",
-  "#d7e3fc",
-  "#ccdbfd",
-  "#c1d3fe",
-  "#b6ccfe",
-  "#b1c8ff",
   "#abc4ff",
+  "#fdeab1",
+  "#f5efff",
+  "#ccdbfd",
+  "#afb795",
+  "#fab995",
+  "#d7e3fc",
+  "#d2a89e",
 ];
 const RainParticle = ({ position, isRainy, isStorm }) => {
   const ref = useRef();
@@ -28,7 +28,7 @@ const RainParticle = ({ position, isRainy, isStorm }) => {
     ref.current.position.y = isRainy
       ? -((elapsedTime + position[1]) % 1.8)
       : isStorm
-      ? -((elapsedTime * 2 + position[1]) % 2)
+      ? -((elapsedTime * 3 + position[1]) % 1.9)
       : -((elapsedTime / 2 + position[1]) % 2.115);
   });
   return (
@@ -45,7 +45,8 @@ const RainParticle = ({ position, isRainy, isStorm }) => {
     >
       <sphereBufferGeometry args={[0.01, 16, 16]} />
       <animated.meshBasicMaterial
-        color={isRainy || isStorm ? "#caf0f8" : "#ffffff"}
+        // color={isRainy || isStorm ? "#caf0f8" : "#ffffff"}
+        color={"#ffffff"}
         toneMapped={false}
       />
     </mesh>
@@ -60,14 +61,14 @@ export default ({ isNight, condition }) => {
   useFrame(({ clock }) => {
     sunRayRef.current.rotation.z = -clock.getElapsedTime() / 4;
 
-    if (Math.random() > 0.93 || thunderFlash.current.power > 5) {
+    if (Math.random() > 0.8 || thunderFlash.current.power > 8) {
       if (thunderFlash.current.power < 1)
         thunderFlash.current.position.set(
           Math.random() * 2 - 1,
-          Math.random(),
-          Math.random() - 1
+          Math.random() - 0.1,
+          Math.random() * 1.5 - 1
         );
-      thunderFlash.current.power = Math.random() * 15;
+      thunderFlash.current.power = Math.random() * 10;
     }
   });
   const sunMoon = useSpring({
@@ -180,7 +181,7 @@ export default ({ isNight, condition }) => {
         </mesh>
         <mesh geometry={nodes.door_dark.geometry}>
           <meshBasicMaterial
-            color={isNight ? "#244372" : "#fef9ef"}
+            color={isNight ? "#333333" : "#fef9ef"}
             toneMapped={false}
           />
         </mesh>
@@ -365,7 +366,7 @@ export default ({ isNight, condition }) => {
         ref={thunderFlash}
         visible={condition === "storm"}
         distance={2.5}
-        decay={1.5}
+        decay={1}
         angle={Math.PI}
       />
     </>

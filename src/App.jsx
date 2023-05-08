@@ -1,21 +1,20 @@
-import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { CameraControls, Html } from "@react-three/drei";
-import { Suspense, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import Models from "./Models";
-import { Perf } from "r3f-perf";
 const daySky = `
     linear-gradient(
   0deg,
-  hsl(191deg 68% 85%) 0%,
-  hsl(191deg 65% 85%) 11%,
-  hsl(190deg 62% 84%) 22%,
-  hsl(190deg 60% 84%) 33%,
-  hsl(190deg 57% 83%) 44%,
-  hsl(190deg 55% 83%) 56%,
-  hsl(190deg 53% 82%) 67%,
-  hsl(189deg 51% 82%) 78%,
-  hsl(189deg 49% 81%) 89%,
-  hsl(189deg 47% 81%) 100%
+  hsl(198deg 54% 63%) 0%,
+  hsl(198deg 54% 66%) 11%,
+  hsl(198deg 55% 69%) 22%,
+  hsl(197deg 57% 73%) 33%,
+  hsl(197deg 59% 76%) 44%,
+  hsl(196deg 61% 79%) 56%,
+  hsl(196deg 65% 82%) 67%,
+  hsl(195deg 71% 86%) 78%,
+  hsl(195deg 81% 89%) 89%,
+  hsl(194deg 100% 92%) 100%
   )
 `;
 
@@ -207,8 +206,6 @@ function App() {
           </div>
         </Html>
       </ModelsGroup>
-
-      <Perf />
     </Canvas>
   );
 }
