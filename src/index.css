@@ -22,12 +22,13 @@ canvas {
 .btn {
   width: 12.5rem;
   font-size: 1rem;
-  padding: 1rem 2.5rem;
+  padding: 0.9rem;
   letter-spacing: 0.1rem;
   outline: none;
   border-radius: 0.4rem;
-  margin: 1rem;
+  margin: 0.8rem;
   cursor: url("/cursor.svg"), default;
+  font-family: "Sono", sans-serif;
   text-transform: uppercase;
   font-weight: 700;
   transition: 0.5s;
@@ -168,4 +169,38 @@ canvas {
 
 .input:checked + .slider:before {
   transform: translateX(2.8rem);
+}
+
+a {
+  text-decoration: none;
+  color: #ffffff;
+  position: relative;
+  cursor: url("/cursor.svg"), default;
+  position: absolute;
+  display: block;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  font-family: "Sono", sans-serif;
+  color: #ffffff;
+  font-size: 0.6rem;
+  letter-spacing: 0.2rem;
+}
+a:hover {
+  cursor: url("/cursor.svg"), default;
+}
+#name::before {
+  background-color: #ffffff;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  margin-right: 10px;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  width: 0.7rem;
+}
+a:hover #name::before {
+  background-color: #ffffff;
+  width: 3rem;
+  cursor: url("/cursor.svg"), default;
 }
